@@ -41,24 +41,39 @@ jobs:
           path: allure-results
           retention-days: 20
       
-      # 🔄 ИСПРАВЛЕННЫЙ БЛОК ДЛЯ ALLURE:
+      # 🔄 УПРОЩЕННАЯ ГЕНЕРАЦИЯ ALLURE
       - name: Generate Allure Report
         if: always()
         run: |
-          # Генерируем отчет в папку allure-report
-          npx allure generate ./allure-results --clean -o ./allure-report
-          # Создаем правильный index.html для корня
-          echo '<!DOCTYPE html><html><head><meta charset="utf-8"><meta http-equiv="refresh" content="0; URL=./allure-report/index.html"></head><body>Redirecting to <a href="./allure-report/index.html">Allure Report</a></body></html>' > ./index.html
+          # Генерируем отчет сразу в папку для деплоя
+          npx allure generate ./allure-results --clean -o ./_site
+          # Создаем .nojekyll для GitHub Pages
+          touch ./_site/.nojekyll
       
-      # 🔄 ИСПРАВЛЕННЫЙ ДЕПЛОЙ:
-      - name: Deploy report
-        if: always()
-        uses: peaceiris/actions-gh-pages@v4
+      # 🔄 ГАРАНТИРОВАННЫЙ ДЕПЛОЙ ЧЕРЕЗ OFFICIAL PAGES ACTION
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: .  # 🔴 ИЗМЕНИТЬ: деплоим КОРЕНЬ проекта
-          force_orphan: true
-        env:
-          # 🔴 ДОБАВИТЬ эти переменные:
-          TZ: UTC
+          path: ./_site
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
+      
+      # 🔔 УВЕДОМЛЕНИЯ В TELEGRAM
+      - name: Send Telegram notification
+        if: always()
+        uses: appleboy/telegram-action@master
+        with:
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          message: |
+            🚀 QA Guru Diplom - Tests Completed
+            📊 Status: ${{ job.status }}
+            🎯 Branch: ${{ github.ref_name }}
+            👤 By: ${{ github.actor }}
+            📈 Report: https://olgamoiseeva1996.github.io/qa-guruDiplom/
+            ${{ job.status == 'success' && '✅ All tests passed!' || '❌ Some tests failed!' }}
