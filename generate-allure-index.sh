@@ -1,4 +1,5 @@
 #!/bin/bash
+
 mkdir -p allure-history
 
 cat > allure-history/index.html << 'EOF'
