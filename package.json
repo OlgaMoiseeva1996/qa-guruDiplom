@@ -8,13 +8,7 @@
     "test": "npx playwright test",
     "testUI": "npx playwright test --ui",
     "test:api": "npx playwright test --grep @api",
-    "test:ui": "npx playwright test --grep @ui",
-    "report": "npx playwright show-report",
-    "allureFile": "npx allure awesome ./allure-results --single-file",
-    "allure:report": "./generate-allure-index.sh",
-    "allure:history:api": "npx allure awesome ./allure-results --grep @api --single-file --output ./allure-history/api",
-    "allure:history:ui": "npx allure awesome ./allure-results --grep @ui --single-file --output ./allure-history/ui",
-    "allure:serve": "npx allure serve allure-results"
+    "test:ui": "npx playwright test --grep @ui"
   },
   "keywords": [],
   "author": "",
