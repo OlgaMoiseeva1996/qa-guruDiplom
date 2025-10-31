@@ -27,7 +27,7 @@ jobs:
       - name: Run PW test
         run: npm run test
       
-      # Сохраняем отчеты
+      # Сохраняем отчеты (ОБНОВЛЕНО до v4)
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -41,7 +41,7 @@ jobs:
           path: allure-results
           retention-days: 20
       
-      # 🔄 УПРОЩЕННАЯ ГЕНЕРАЦИЯ ALLURE
+      # Генерация Allure отчета
       - name: Generate Allure Report
         if: always()
         run: |
@@ -50,7 +50,7 @@ jobs:
           # Создаем .nojekyll для GitHub Pages
           touch ./_site/.nojekyll
       
-      # 🔄 ГАРАНТИРОВАННЫЙ ДЕПЛОЙ ЧЕРЕЗ OFFICIAL PAGES ACTION
+      # Деплой через официальные Pages actions
       - name: Setup Pages
         uses: actions/configure-pages@v3
       
@@ -63,7 +63,7 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v2
       
-      # 🔔 УВЕДОМЛЕНИЯ В TELEGRAM
+      # Уведомления в Telegram
       - name: Send Telegram notification
         if: always()
         uses: appleboy/telegram-action@master
